@@ -1,0 +1,15 @@
+.specialTable {
+    height: 200px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+#personList thead tr { 
+    position: sticky;
+    top: 0;
+}
+#personList td, #personList th{
+    border: 1px solid black;
+}
+.hiddenInput {
+    display: none;
+}

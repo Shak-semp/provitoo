@@ -1,0 +1,86 @@
+{% extends "base.html" %} {% block title %}Osaühingu andmete vaade{% endblock %}
+{% block content %}
+<br>
+<h1 align="Center">
+    Osaühingu andmete vaade
+</h1>
+<br>
+<table class="table table-striped table-bordered">
+    <tbody>
+        <tr>
+            <th scope="row">Nimi</th>
+            <td>{{ company.companyName }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Registrikood</th>
+            <td>{{ company.regCode }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Asutamiskuupäev</th>
+            <td>{{ company.date }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Kogukapitali suurus</th>
+            <td>{{ company.capital }}</td>
+        </tr>
+    </tbody>
+</table>
+<br>
+<h2 align="Center">Osanikud</h2>
+<br>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th scope="row">Nimi</th>
+            <th scope="row">Isikukood/Registrikood</th>
+            <th scope="row">Füüsiline/Juriidiline</th>
+            <th scope="row">Osa suurus</th>
+            <th scope="row">Asutaja</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for companyOwner in company.shareOwner %}
+        <tr>
+            <td>
+                {% if companyOwner.owner.type == 1 %}
+                    {{ companyOwner.owner.firstName + " " + companyOwner.owner.lastName}}
+                {% else %}
+                    {{ companyOwner.owner.name }}
+                {% endif %}
+            </td>
+            <td>
+                {% if companyOwner.owner.type == 1 %}
+                    {{ companyOwner.owner.personalCode}}
+                {% else %}
+                    {{ companyOwner.owner.regCode }}
+                {% endif %}
+            </td>
+            <td>
+                {% if companyOwner.owner.type == 1 %}
+                    Füüsiline
+                {% else %}
+                    Juriidiline
+                {% endif %}
+            </td>
+            <td>
+                {{companyOwner.personShare}}
+            </td>
+            <td>
+                {% if companyOwner.personIsFounder == 1 %}
+                    Jah
+                {% else %}
+                    Ei
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<br>
+<h3 align="Center">
+    <form method="POST">
+        <button type="submit" id="{{company.companyId}}submitNumber" class="btn btn-success submitButton">Osaühingu osakapitali suurendamise vorm</button>
+        <input type="text" class="form-control hiddenInput" id="selectedCompany" name="idNumber" readonly>
+    </form>
+</h3>
+{% endblock %}

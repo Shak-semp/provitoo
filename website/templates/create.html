@@ -1,0 +1,117 @@
+{% extends "base.html" %} {% block title %}Osaühingu asutamise vorm{% endblock %}
+{% block content %}
+<h3 align="center">Osaühingu asutamise vorm</h3>
+<form method="POST">
+    <div class="form-group">
+        <label for="name">Nimi</label>
+        <input type="text" class="form-control" id="name" name="name" placeholder="Sisestage nimi..." aria-describedby="nameHelpBlock">
+        <small id="nameHelpBlock" class="form-text text-muted">
+            3 kuni 100 tähte või numbrit
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="reg">Registrikood</label>
+        <input type="text" maxlength="7" class="form-control" id="reg" name="reg" aria-describedby="regHelpBlock">
+        <small id="regHelpBlock" class="form-text text-muted">
+            7 numbrit
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="date">Asutamiskuupäev</label>
+        <input type="date" class="form-control" id="date" name="date" max="{{ date }}">
+    </div>
+    <div class="form-group">
+        <div class="form-group">
+            <label for="capital">Kogukapitali suurus eurodes</label>
+            <input type="number" readonly class="form-control" id="capital" name="capital" value="0" aria-describedby="capitalHelpBlock">
+            <small id="capitalHelpBlock" class="form-text text-muted">
+                Täisarv, vähemalt 2500
+            </small>
+        </div>
+    </div>
+    <br>
+    <div class="form-group" id="selectedPersons">
+        <table id="shareList" class="table table-bordered">
+            <tr>
+                <th scope="col">
+                    <span class="hiddenInput">
+                        Valitud isikud:<input type="text" class="form-control" id="selectedPersonsId" name="selectedPersonsId" readonly>
+                    </span>
+                </th>
+                <th scope="col">
+                    <span class="hiddenInput">
+                        Osa suurus:<input type="text" class="form-control" id="shareInCompany" name="shareInCompany" readonly>
+                    </span>
+                </th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+        </table>
+    </div>
+    <br>
+    <div id="owners" class="border border-primary p-3">
+        <div class="form-group row">
+            <div class="form-group">
+                <label for="person">Osanike andmed</label>
+                <input id="person" class="form-control" name="searchText" type="text" onkeyup="searchForPerson()" placeholder="Otsing">
+                <br>
+                <div class="specialTable">
+                    <table id="personList" class="table specialTable">
+                        <thead>
+                            <tr>
+                                <th scope="col-4">Nimi</th>
+                                <th scope="col-3">Isikukood/Registrikood</th>
+                                <th scope="col-3">Füüsiline/Juriidiline</th>
+                                <th scope="col-2"> </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for person in persons %}
+                            <tr id="rowId{{person.id}}">
+                                <td scope="col-4">
+                                    {% if person.type == 1 %}
+                                    {{ person.firstName + " " + person.lastName}}
+                                    {% else %}
+                                    {{ person.name }}
+                                    {% endif %}
+                                </td>
+                                <td scope="col-3">
+                                    {% if person.type == 1 %}
+                                    {{ person.personalCode}}
+                                    {% else %}
+                                    {{ person.regCode }}
+                                    {% endif %}
+                                </td>
+                                <td scope="col-3">
+                                    {% if person.type == 1 %}
+                                    Füüsiline
+                                    {% else %}
+                                    Juriidiline
+                                    {% endif %}
+                                </td>
+                                <td scope="col-2">
+                                    <div class="form-group row">
+                                        <label for="cut" class="col-sm-2 col-form-label">Osa suurus</label>
+                                        <div class="col-sm-5">
+                                            <input type="number" min="1" class="form-control" id="cut{{person.id}}" onkeyup="checkIfEnable({{person.id}})" aria-describedby="cutHelpBlock">
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <button class="btn btn-primary" type="button" disabled id="{{person.id}}button" onClick="addPerson(this)">Lisa</button>
+                                        </div>
+                                        <small id="cutHelpBlock" class="form-text text-muted">
+                                            Täisarv, vähemalt 1
+                                        </small>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <button type="submit" class="btn btn-primary">Salvesta</button>
+</form>
+{% endblock %}
